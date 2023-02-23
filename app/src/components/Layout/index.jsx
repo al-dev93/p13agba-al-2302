@@ -5,7 +5,7 @@ import logo from "../../assets/images/argentBankLogo.png";
 const Layout = () => (
   <>
     <nav className="main-nav">
-      <Link className="main-nav-logo" to="./index.html">
+      <Link className="main-nav-logo" to="/">
         <img
           className="main-nav-logo-image"
           src={logo}
