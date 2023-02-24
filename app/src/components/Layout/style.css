@@ -1,4 +1,18 @@
 /* stylelint-disable a11y/media-prefers-color-scheme */
+.layout-wrapper {
+  flex: 1 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1 1;
+}
+
+.bg-dark {
+  background-color: #12002b;
+}
+
 .main-nav {
   display: flex;
   justify-content: space-between;
