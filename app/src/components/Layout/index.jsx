@@ -16,7 +16,7 @@ const Layout = () => {
           <h1 className="sr-only">Argent Bank</h1>
         </Link>
         <div>
-          <NavLink className="main-nav-item" to="/loging">
+          <NavLink className="main-nav-item" to="/login">
             <i className="fa fa-user-circle" />
             Sign In
           </NavLink>
