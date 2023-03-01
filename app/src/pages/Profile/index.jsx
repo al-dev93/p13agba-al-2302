@@ -1,14 +1,30 @@
+import { useEffect, useState } from "react";
+import postData from "../../utils/postData";
 import "./style.css";
 
 const Profile = () => {
-  console.log(JSON.parse(localStorage.getItem("login")));
+  const [userData, setUserData] = useState(null);
+  const [connectStatus, setConnectStatus] = useState(null);
+  const token = JSON.parse(localStorage.getItem("login"));
+  useEffect(() => {
+    (async function fetchData() {
+      const data = await postData(
+        "http://localhost:3001/api/v1/user/profile",
+        token.token
+      );
+      setUserData(data.body);
+      setConnectStatus(data.status);
+    })();
+  }, []);
+
   return (
     <>
       <div className="header">
         <h1>
           Welcome back
           <br />
-          Tony Jarvis!
+          {userData && userData.firstName}
+          {userData && console.log(connectStatus, userData)}
         </h1>
         <button type="submit" className="edit-button">
           Edit Name

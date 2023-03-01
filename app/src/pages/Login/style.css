@@ -21,6 +21,7 @@
 }
 
 .input-wrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -34,6 +35,20 @@
 .input-wrapper input {
   padding: 5px;
   font-size: 1.2rem;
+}
+
+.input-wrapper .is-invalid {
+  background-color: #fdd;
+  border-color: #900;
+}
+
+.input-wrapper span {
+  position: absolute;
+  right: 0;
+  top: 6px;
+  font-size: 0.625rem;
+  font-style: italic;
+  color: red;
 }
 
 .sign-in-button {

@@ -34,3 +34,8 @@ body {
   width: 1px !important;
   white-space: nowrap !important; /* 3 */
 }
+
+/* stylelint-disable-next-line a11y/no-display-none */
+.is-hidden {
+  display: none;
+}
