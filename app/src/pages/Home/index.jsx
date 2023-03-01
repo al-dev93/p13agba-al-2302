@@ -4,7 +4,7 @@ import iconMoney from "../../assets/icons/icon-money.png";
 import iconSecurity from "../../assets/icons/icon-security.png";
 
 const Home = () => (
-  <main>
+  <>
     <div className="hero">
       <section className="hero-content">
         <h2 className="sr-only">Promoted Content</h2>
@@ -38,7 +38,7 @@ const Home = () => (
         </p>
       </div>
     </section>
-  </main>
+  </>
 );
 
 export default Home;
