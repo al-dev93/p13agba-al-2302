@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import postData from "../../utils/postData";
 import "./style.css";
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
-  const [connectStatus, setConnectStatus] = useState(null);
+  const [user, setUser] = useOutletContext();
   const token = JSON.parse(localStorage.getItem("login"));
   useEffect(() => {
     (async function fetchData() {
@@ -13,7 +14,7 @@ const Profile = () => {
         token.token
       );
       setUserData(data.body);
-      setConnectStatus(data.status);
+      setUser(data.status === 200 ? data.body.firstName : undefined);
     })();
   }, []);
 
@@ -23,8 +24,7 @@ const Profile = () => {
         <h1>
           Welcome back
           <br />
-          {userData && userData.firstName}
-          {userData && console.log(connectStatus, userData)}
+          {userData && `${user} ${userData.lastName}`}
         </h1>
         <button type="submit" className="edit-button">
           Edit Name
