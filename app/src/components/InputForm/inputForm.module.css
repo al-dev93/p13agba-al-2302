@@ -1,0 +1,39 @@
+/* stylelint-disable a11y/media-prefers-color-scheme */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.remember-wrapper {
+  display: flex;
+}
+
+.label {
+  position: relative;
+  font-weight: bold;
+}
+
+.input {
+  padding: 5px;
+  font-size: 1.2rem;
+}
+
+.invalid {
+  background-color: #fdd;
+  border-color: #900;
+}
+
+.error {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: 0.625rem;
+  font-style: italic;
+  color: red;
+}
+
+.remember-label {
+  margin-left: 0.25rem;
+}

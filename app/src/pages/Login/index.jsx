@@ -1,39 +1,45 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable prettier/prettier */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import InputForm from "../../components/InputForm";
+import { defineLoginForm } from "../../utils/defineForm";
 import postData from "../../utils/postData";
 import "./style.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [login, setLogin] = useState({
-    email: "",
-    password: "",
-  });
-  const [remember, setRemember] = useState("");
-  const [fieldError, setFieldError] = useState({
-    username: "Username is required",
-    password: "Password is required",
+  const [loginState, setLoginState] = useState({
+    username: { value: "", error: "" },
+    password: { value: "", error: "" },
   });
 
-  function handleFieldChange(event) {
-    console.log(remember);
-    if (event.target.value !== "") {
-      const property = event.target.name === "username" ? "email" : "password";
-      event.target.classList.remove("is-invalid");
-      setLogin({ ...login, [property]: event.target.value });
-      setFieldError({ ...fieldError, [event.target.name]: "" });
-      event.target.nextElementSibling.classList.add("is-hidden");
-    } else {
-      event.target.classList.add("is-invalid");
-      const missingInput =
-        event.target.name === "username"
-          ? "Username is required"
-          : "Password is required";
-      setFieldError({ ...fieldError, [event.target.name]: missingInput });
-      event.target.nextElementSibling.classList.remove("is-hidden");
+  function checkErrorForm(state) {
+    for (const key in state) {
+      if (state[key].error) return true;
     }
+    return false;
+  }
+
+  function getDataToPost(state) {
+    return {
+      email: state.username.value,
+      password: state.password.value,
+    };
+  }
+
+  function setInputFormError(message, state, setState) {
+    const postDataError = message.includes("User") ? "username" : "password";
+    setState({
+      ...state,
+      [postDataError]: { ...state[postDataError], error: message },
+    });
+  }
+
+  function connectToProfile(body, nav) {
+    localStorage.setItem("login", body);
+    nav("/profile");
   }
 
   return (
@@ -44,68 +50,28 @@ const Login = () => {
         noValidate
         onSubmit={async (event) => {
           event.preventDefault();
-          if (!fieldError.password && !fieldError.username) {
+          if (!checkErrorForm(loginState)) {
             const data = await postData(
               "http://localhost:3001/api/v1/user/login",
-              login
+              getDataToPost(loginState)
             );
-            if (data.status === 200) {
-              localStorage.setItem("login", JSON.stringify(data.body));
-              navigate("/profile");
-            } else {
-              const property = data.message.includes("User")
-                ? "username"
-                : "password";
-              const input = document.getElementById(property);
-              setFieldError({ ...fieldError, [property]: data.message });
-              input.classList.add("is-invalid");
-              input.nextElementSibling.classList.remove("is-hidden");
-            }
-          } else {
-            // eslint-disable-next-line no-restricted-syntax
-            for (const key in fieldError) {
-              if (fieldError[key]) {
-                const input = document.getElementById(`${key}`);
-                input.classList.add("is-invalid");
-                input.nextElementSibling.classList.remove("is-hidden");
-              }
-            }
+            if (data.status === 200)
+              connectToProfile(JSON.stringify(data.body), navigate);
+            else setInputFormError(data.message, loginState, setLoginState);
           }
         }}
       >
-        <div className="input-wrapper">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            // value={remember === "on" ? login.username : ""}
-            onChange={handleFieldChange}
-            required
+        {/* eslint-disable-next-line array-callback-return */}
+        {defineLoginForm.map((input) => (
+          <InputForm
+            key={`${input.name}`}
+            state={loginState}
+            setState={setLoginState}
+            name={input.name}
+            type={input.type}
+            controlledInput={input.controlledInput}
           />
-          <span className="is-hidden">{fieldError.username}</span>
-        </div>
-        <div className="input-wrapper">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            // value={remember === "on" ? login.password : ""}
-            onChange={handleFieldChange}
-            required
-          />
-          <span className="is-hidden">{fieldError.password}</span>
-        </div>
-        <div className="input-remember">
-          <input
-            type="checkbox"
-            id="remember-me"
-            name="remember-me"
-            onChange={(event) => setRemember(event.target.value)}
-          />
-          <label htmlFor="remember-me">Remember me</label>
-        </div>
+        ))}
         <button type="submit" className="sign-in-button">
           Sign In
         </button>

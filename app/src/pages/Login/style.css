@@ -12,45 +12,6 @@
   font-size: 5rem;
 }
 
-.input-remember {
-  display: flex;
-}
-
-.input-remember label {
-  margin-left: 0.25rem;
-}
-
-.input-wrapper {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  margin-bottom: 1rem;
-}
-
-.input-wrapper label {
-  font-weight: bold;
-}
-
-.input-wrapper input {
-  padding: 5px;
-  font-size: 1.2rem;
-}
-
-.input-wrapper .is-invalid {
-  background-color: #fdd;
-  border-color: #900;
-}
-
-.input-wrapper span {
-  position: absolute;
-  right: 0;
-  top: 6px;
-  font-size: 0.625rem;
-  font-style: italic;
-  color: red;
-}
-
 .sign-in-button {
   display: block;
   width: 100%;
