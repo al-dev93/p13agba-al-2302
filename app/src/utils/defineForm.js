@@ -5,4 +5,7 @@ export const defineLoginForm = [
   { name: "remember-me", type: "checkbox", controlledInput: false },
 ];
 
-export const defineProfileForm = [];
+export const defineProfileForm = [
+  { name: "first-name", type: "text", controlledInput: false },
+  { name: "last-name", type: "text", controlledInput: false },
+];

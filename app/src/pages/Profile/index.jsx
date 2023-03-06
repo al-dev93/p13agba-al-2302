@@ -1,10 +1,18 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import InputForm from "../../components/InputForm";
+import { defineProfileForm } from "../../utils/defineForm";
 import postData from "../../utils/postData";
 import "./style.css";
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
+  const [profilState, setProfilState] = useState({
+    "first-name": { value: "", error: "" },
+    "last-name": { value: "", error: "" },
+  });
+  const [editBox, openEditBox] = useState(false);
   const [user, setUser] = useOutletContext();
   const token = JSON.parse(localStorage.getItem("login"));
   useEffect(() => {
@@ -24,11 +32,48 @@ const Profile = () => {
         <h1>
           Welcome back
           <br />
-          {userData && `${user} ${userData.lastName}`}
+          {userData && !editBox ? `${user} ${userData.lastName}!` : null}
         </h1>
-        <button type="submit" className="edit-button">
-          Edit Name
-        </button>
+        {editBox && (
+          <form action="" className="editbox-form">
+            <div className="editbox-element-wrapper">
+              {defineProfileForm.map((input) => (
+                <div key={input.name} className="editbox-input-form">
+                  <InputForm
+                    state={profilState}
+                    setState={setProfilState}
+                    name={input.name}
+                    type={input.type}
+                    controlledInput={input.controlledInput}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="editbox-element-wrapper">
+              <div className="editbox-button-wrapper">
+                <button className="editbox-button" type="submit">
+                  Save
+                </button>
+                <button
+                  className="editbox-button"
+                  type="button"
+                  onClick={() => openEditBox(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
+        {!editBox && (
+          <button
+            type="submit"
+            className="edit-button"
+            onClick={() => openEditBox(true)}
+          >
+            Edit Name
+          </button>
+        )}
       </div>
       <h2 className="sr-only">Accounts</h2>
       <section className="account">

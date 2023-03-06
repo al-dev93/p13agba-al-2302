@@ -81,5 +81,5 @@ InputForm.propTypes = {
 InputForm.defaultProps = {
   state: null,
   type: "text",
-  controlledInput: false,
+  controlledInput: undefined,
 };
