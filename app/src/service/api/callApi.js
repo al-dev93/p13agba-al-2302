@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
-async function postData(url, data) {
-  const isString = typeof data === "string" || data instanceof String;
+async function callApi(url, data, apiMethod, token = undefined) {
   const apiHeaders = new Headers();
   apiHeaders.append("accept", "application/json");
-  if (!isString) apiHeaders.append("Content-Type", "application/json");
-  else apiHeaders.append("Authorization", `Bearer ${data}`);
+  apiHeaders.append("Content-Type", "application/json");
+  if (token) apiHeaders.append("Authorization", `Bearer ${token}`);
+  const apiBody = data ? JSON.stringify(data) : null;
 
   const apiResponse = await fetch(url, {
-    method: "POST",
+    method: apiMethod,
     headers: apiHeaders,
-    body: !isString ? JSON.stringify(data) : null,
+    body: apiBody || null,
   })
     .then((response) => response.json())
     .then((response) => response)
@@ -18,4 +18,4 @@ async function postData(url, data) {
   return apiResponse;
 }
 
-export default postData;
+export default callApi;

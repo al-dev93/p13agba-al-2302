@@ -1,21 +1,35 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import postData from "../../utils/postData";
-import "./style.css";
+import InputForm from "../../components/InputForm";
+import { defineProfileForm } from "../../utils/defineForm";
+import callApi from "../../service/api/callApi";
+import { PROFILE } from "../../utils/urlApi";
+import "./index.css";
 
 const Profile = () => {
-  const [userData, setUserData] = useState(null);
-  const [user, setUser] = useOutletContext();
-  const token = JSON.parse(localStorage.getItem("login"));
-  useEffect(() => {
-    (async function fetchData() {
-      const data = await postData(
-        "http://localhost:3001/api/v1/user/profile",
-        token.token
-      );
+  const [profilState, setProfilState] = useState();
+  const [editBox, openEditBox] = useState(false);
+  const [userData, setUserData] = useOutletContext();
+
+  const { token } = JSON.parse(localStorage.getItem("login"));
+
+  async function apiRequest(event = undefined, putData = undefined) {
+    if (event) event.preventDefault();
+    const method = putData ? "PUT" : "POST";
+    const data = await callApi(PROFILE, putData, method, token);
+    if (data.status === 200) {
       setUserData(data.body);
-      setUser(data.status === 200 ? data.body.firstName : undefined);
-    })();
+      if (!putData)
+        setProfilState({
+          "first-name": { value: data.body.firstName },
+          "last-name": { value: data.body.lastName },
+        });
+    }
+  }
+
+  useEffect(() => {
+    apiRequest();
   }, []);
 
   return (
@@ -24,11 +38,60 @@ const Profile = () => {
         <h1>
           Welcome back
           <br />
-          {userData && `${user} ${userData.lastName}`}
+          {userData && !editBox
+            ? `${userData.firstName} ${userData.lastName}!`
+            : null}
         </h1>
-        <button type="submit" className="edit-button">
-          Edit Name
-        </button>
+        {editBox && (
+          <form
+            onSubmit={(event) => {
+              apiRequest(event, {
+                firstName: profilState["first-name"].value,
+                lastName: profilState["last-name"].value,
+              });
+              openEditBox(false);
+            }}
+            action=""
+            className="editbox-form"
+          >
+            <div className="editbox-element-wrapper">
+              {defineProfileForm.map((input) => (
+                <div key={input.name} className="editbox-input-form">
+                  <InputForm
+                    state={profilState}
+                    setState={setProfilState}
+                    name={input.name}
+                    type={input.type}
+                    placeHolder={profilState[input.name].value}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="editbox-element-wrapper">
+              <div className="editbox-button-wrapper">
+                <button className="editbox-button" type="submit">
+                  Save
+                </button>
+                <button
+                  className="editbox-button"
+                  type="button"
+                  onClick={() => openEditBox(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
+        {!editBox && (
+          <button
+            type="button"
+            className="edit-button"
+            onClick={() => openEditBox(true)}
+          >
+            Edit Name
+          </button>
+        )}
       </div>
       <h2 className="sr-only">Accounts</h2>
       <section className="account">
