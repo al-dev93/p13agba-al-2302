@@ -1,4 +1,4 @@
-import "./style.css";
+import "./index.css";
 import iconChat from "../../assets/icons/icon-chat.png";
 import iconMoney from "../../assets/icons/icon-money.png";
 import iconSecurity from "../../assets/icons/icon-security.png";

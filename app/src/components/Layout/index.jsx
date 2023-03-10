@@ -1,16 +1,16 @@
-import "./style.css";
+import "./index.css";
 import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import logo from "../../assets/images/argentBankLogo.png";
 import LoginAction from "../LoginAction";
+import logo from "../../assets/images/argentBankLogo.png";
 
 const Layout = () => {
   const locate = useLocation().pathname;
-  const [user, setUser] = useState(undefined);
+  const [userData, setUserData] = useState(undefined);
 
   function handleDisconnect() {
-    setUser(undefined);
-    localStorage.removeItem("login");
+    setUserData(undefined);
+    if (!localStorage.getItem("userLogin")) localStorage.removeItem("login");
   }
 
   return (
@@ -28,10 +28,13 @@ const Layout = () => {
           />
           <h1 className="sr-only">Argent Bank</h1>
         </Link>
-        <LoginAction user={user} disconnect={() => handleDisconnect()} />
+        <LoginAction
+          user={userData && userData.firstName}
+          disconnect={() => handleDisconnect()}
+        />
       </nav>
       <main className={locate === "/" ? null : "main bg-dark"}>
-        <Outlet context={[user, setUser]} />
+        <Outlet context={[userData, setUserData]} />
       </main>
       <footer className="footer">
         <p className="footer-text">Copyright 2020 Argent Bank</p>

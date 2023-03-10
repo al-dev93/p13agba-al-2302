@@ -1,31 +1,55 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import propTypes from "prop-types";
-import style from "./inputForm.module.css";
+import style from "./index.module.css";
 
 function isInvalidInput(state, property) {
   if (state[property] === undefined || !state[property].error) return false;
   return true;
 }
 
-const InputForm = ({ state, setState, name, type, controlledInput }) => {
+function hasErrorProperty(object) {
+  return Object.prototype.hasOwnProperty.call(object, "error");
+}
+
+function capitalizeFirstLetter(word) {
+  const Word = word.replace(/^./, word[0].toUpperCase());
+  return Word;
+}
+
+const InputForm = ({ state, setState, name, type, placeHolder }) => {
+  const login = JSON.parse(localStorage.getItem("userLogin"));
+
   function handleChange(event) {
     const { target } = event;
-    if (target.value === "" && controlledInput) {
+    if (target.value === "" && !login && hasErrorProperty(state[name])) {
+      target.classList.add(style.invalid);
       setState({
         ...state,
         [name]: {
           ...state[name],
-          error: `${controlledInput} is required`,
+          error: `${capitalizeFirstLetter(name)} is required`,
         },
       });
-      target.classList.add(style.invalid);
-    } else if (target.value !== "") {
+    } else if (hasErrorProperty(state[name])) {
+      target.classList.remove(style.invalid);
       setState({
         ...state,
-        [name]: { ...state[name], value: target.value, error: "" },
+        [name]: {
+          value: target.value,
+          error: "",
+        },
       });
-      if (controlledInput) target.classList.remove(style.invalid);
+    } else if (name === "remember-me") {
+      setState({
+        ...state,
+        "remember-me": target.checked,
+      });
+    } else {
+      setState({
+        ...state,
+        [name]: { value: target.value },
+      });
     }
   }
 
@@ -35,9 +59,9 @@ const InputForm = ({ state, setState, name, type, controlledInput }) => {
         type === "checkbox" ? style["remember-wrapper"] : style.wrapper
       }
     >
-      {controlledInput && (
+      {hasErrorProperty(state[name]) && (
         <label className={style.label} htmlFor={name}>
-          {controlledInput}
+          {capitalizeFirstLetter(name)}
           {state[name].error && (
             <span className={style.error}>{state[name].error}</span>
           )}
@@ -53,10 +77,14 @@ const InputForm = ({ state, setState, name, type, controlledInput }) => {
         id={name}
         name={name}
         onChange={handleChange}
-        required={controlledInput ? "on" : null}
+        required={hasErrorProperty(state[name]) ? "on" : undefined}
+        placeholder={type !== "checkbox" ? placeHolder : undefined}
+        checked={type === "checkbox" ? state[name] : null}
       />
       {type === "checkbox" && (
-        <label className={style["remember-label"]}>Remember me</label>
+        <label className={style["remember-label"]} htmlFor={name}>
+          Remember me
+        </label>
       )}
     </div>
   );
@@ -65,21 +93,21 @@ const InputForm = ({ state, setState, name, type, controlledInput }) => {
 export default InputForm;
 
 InputForm.propTypes = {
-  state:
-    propTypes.objectOf(
-      propTypes.shape({
-        value: propTypes.string,
-        error: propTypes.string,
-      })
-    ) || null,
+  state: propTypes.shape({
+    username: propTypes.objectOf(propTypes.string) || undefined,
+    password: propTypes.objectOf(propTypes.string) || undefined,
+    "remember-me": propTypes.bool || null,
+    "first-name": propTypes.objectOf(propTypes.string) || undefined,
+    "last-name": propTypes.objectOf(propTypes.string) || undefined,
+  }),
   setState: propTypes.func.isRequired,
   name: propTypes.string.isRequired,
   type: propTypes.string,
-  controlledInput: propTypes.oneOfType([propTypes.string, propTypes.bool]),
+  placeHolder: propTypes.string,
 };
 
 InputForm.defaultProps = {
   state: null,
   type: "text",
-  controlledInput: undefined,
+  placeHolder: undefined,
 };

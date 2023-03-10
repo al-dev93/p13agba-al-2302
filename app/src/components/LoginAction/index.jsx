@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import propTypes from "prop-types";
 import { NavLink } from "react-router-dom";
-import "./style.css";
+import "./index.css";
 
 const LoginAction = ({ user, disconnect }) => {
   return (
