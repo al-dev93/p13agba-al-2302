@@ -12,32 +12,24 @@ function hasErrorProperty(object) {
   return Object.prototype.hasOwnProperty.call(object, "error");
 }
 
-function capitalizeFirstLetter(word) {
-  const Word = word.replace(/^./, word[0].toUpperCase());
-  return Word;
-}
+// function capitalizeFirstLetter(word) {
+//   const Word = word.replace(/^./, word[0].toUpperCase());
+//   return Word;
+// }
 
-const InputForm = ({ state, setState, name, type, placeHolder }) => {
+const InputForm = ({ state, setState, name, type, label, placeHolder }) => {
   const login = JSON.parse(localStorage.getItem("userLogin"));
 
   function handleChange(event) {
     const { target } = event;
-    if (target.value === "" && !login && hasErrorProperty(state[name])) {
-      target.classList.add(style.invalid);
-      setState({
-        ...state,
-        [name]: {
-          ...state[name],
-          error: `${capitalizeFirstLetter(name)} is required`,
-        },
-      });
-    } else if (hasErrorProperty(state[name])) {
-      target.classList.remove(style.invalid);
+    if (hasErrorProperty(state[name])) {
+      if (target.value || login) target.classList.remove(style.invalid);
+      else target.classList.add(style.invalid);
       setState({
         ...state,
         [name]: {
           value: target.value,
-          error: "",
+          error: target.value || login ? "" : `${label} is required`,
         },
       });
     } else if (name === "remember-me") {
@@ -59,9 +51,9 @@ const InputForm = ({ state, setState, name, type, placeHolder }) => {
         type === "checkbox" ? style["remember-wrapper"] : style.wrapper
       }
     >
-      {hasErrorProperty(state[name]) && (
+      {label && type !== "checkbox" && (
         <label className={style.label} htmlFor={name}>
-          {capitalizeFirstLetter(name)}
+          {label}
           {state[name].error && (
             <span className={style.error}>{state[name].error}</span>
           )}
@@ -83,7 +75,7 @@ const InputForm = ({ state, setState, name, type, placeHolder }) => {
       />
       {type === "checkbox" && (
         <label className={style["remember-label"]} htmlFor={name}>
-          Remember me
+          {label}
         </label>
       )}
     </div>
@@ -103,11 +95,13 @@ InputForm.propTypes = {
   setState: propTypes.func.isRequired,
   name: propTypes.string.isRequired,
   type: propTypes.string,
+  label: propTypes.string,
   placeHolder: propTypes.string,
 };
 
 InputForm.defaultProps = {
   state: null,
   type: "text",
+  label: undefined,
   placeHolder: undefined,
 };

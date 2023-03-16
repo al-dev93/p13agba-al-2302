@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import InputForm from "../../components/InputForm";
-import { defineProfileForm } from "../../utils/defineForm";
+import { profileInputModel } from "../../utils/inputFormModels";
 import callApi from "../../service/api/callApi";
 import { PROFILE } from "../../utils/urlApi";
 import "./index.css";
@@ -14,13 +14,21 @@ const Profile = () => {
 
   const { token } = JSON.parse(localStorage.getItem("login"));
 
-  async function apiRequest(event = undefined, putData = undefined) {
-    if (event) event.preventDefault();
-    const method = putData ? "PUT" : "POST";
+  async function handleSubmit(event = undefined) {
+    let method;
+    let putData;
+    if (event) {
+      event.preventDefault();
+      putData = {
+        firstName: profilState["first-name"].value,
+        lastName: profilState["last-name"].value,
+      };
+      method = "PUT";
+    }
     const data = await callApi(PROFILE, putData, method, token);
     if (data.status === 200) {
       setUserData(data.body);
-      if (!putData)
+      if (!event)
         setProfilState({
           "first-name": { value: data.body.firstName },
           "last-name": { value: data.body.lastName },
@@ -29,7 +37,7 @@ const Profile = () => {
   }
 
   useEffect(() => {
-    apiRequest();
+    handleSubmit();
   }, []);
 
   return (
@@ -45,17 +53,14 @@ const Profile = () => {
         {editBox && (
           <form
             onSubmit={(event) => {
-              apiRequest(event, {
-                firstName: profilState["first-name"].value,
-                lastName: profilState["last-name"].value,
-              });
+              handleSubmit(event);
               openEditBox(false);
             }}
             action=""
             className="editbox-form"
           >
             <div className="editbox-element-wrapper">
-              {defineProfileForm.map((input) => (
+              {profileInputModel.map((input) => (
                 <div key={input.name} className="editbox-input-form">
                   <InputForm
                     state={profilState}

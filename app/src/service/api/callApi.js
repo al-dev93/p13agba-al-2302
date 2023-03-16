@@ -1,5 +1,10 @@
 /* eslint-disable prettier/prettier */
-async function callApi(url, data, apiMethod, token = undefined) {
+async function callApi(
+  url,
+  data = undefined,
+  apiMethod = "POST",
+  token = undefined
+) {
   const apiHeaders = new Headers();
   apiHeaders.append("accept", "application/json");
   apiHeaders.append("Content-Type", "application/json");

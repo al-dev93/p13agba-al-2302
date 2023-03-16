@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InputForm from "../../components/InputForm";
-import { defineLoginForm } from "../../utils/defineForm";
+import { loginInputModel } from "../../utils/inputFormModels";
 import callApi from "../../service/api/callApi";
 import { LOGIN } from "../../utils/urlApi";
 import "./index.css";
@@ -18,11 +18,8 @@ const Login = () => {
     "remember-me": !!login,
   });
 
-  function checkErrorForm(state) {
-    for (const key in state) {
-      if (state[key].error) return true;
-    }
-    return false;
+  function isLoginInput() {
+    return loginState.username.value && loginState.password.value;
   }
 
   function getDataToPost(state) {
@@ -32,11 +29,11 @@ const Login = () => {
     };
   }
 
-  function setInputFormError(message, state, setState) {
+  function setInputFormError(message) {
     const postDataError = message.includes("User") ? "username" : "password";
-    setState({
-      ...state,
-      [postDataError]: { ...state[postDataError], error: message },
+    setLoginState({
+      ...loginState,
+      [postDataError]: { ...loginState[postDataError], error: message },
     });
   }
 
@@ -58,41 +55,54 @@ const Login = () => {
     }
   }
 
-  async function apiRequest(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    if (login && (!loginState.username.value || !loginState.password.value)) {
-      navigate("/profile");
+    if (login) {
       if (!loginState["remember-me"]) localStorage.removeItem("userLogin");
+      navigate("/profile");
     }
-    if (!checkErrorForm(loginState)) {
-      const data = await callApi(LOGIN, getDataToPost(loginState), "POST");
-      if (data.status === 200) {
-        connectToProfile(
-          data.body,
-          loginState["remember-me"]
-            ? {
-                username: loginState.username.value,
-              }
-            : undefined,
-          navigate
-        );
-      } else setInputFormError(data.message, loginState, setLoginState);
+    if (!login && !isLoginInput()) {
+      setLoginState({
+        ...loginState,
+        username: {
+          ...loginState.username,
+          error: loginState.username.value ? "" : "Username is required",
+        },
+        password: {
+          ...loginState.password,
+          error: loginState.password.value ? "" : "Password is required",
+        },
+      });
+      return;
     }
+    const data = await callApi(LOGIN, getDataToPost(loginState), "POST");
+    if (data.status === 200) {
+      connectToProfile(
+        data.body,
+        loginState["remember-me"]
+          ? {
+              username: loginState.username.value,
+            }
+          : undefined,
+        navigate
+      );
+    } else setInputFormError(data.message);
   }
 
   return (
     <section className="sign-in-content">
       <i className="fa fa-user-circle sign-in-icon" />
       <h1>Sign In</h1>
-      <form noValidate onSubmit={(event) => apiRequest(event)}>
+      <form noValidate onSubmit={(event) => handleSubmit(event)}>
         {/* eslint-disable-next-line array-callback-return */}
-        {defineLoginForm.map((input) => (
+        {loginInputModel.map((input) => (
           <InputForm
             key={`${input.name}`}
             state={loginState}
             setState={setLoginState}
             name={input.name}
             type={input.type}
+            label={input.label}
             placeHolder={login ? getPlaceHolder(input.name) : undefined}
           />
         ))}
