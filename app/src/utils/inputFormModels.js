@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 export const loginInputModel = [
-  { name: "username", type: "text", label: "Username" },
-  { name: "password", type: "password", label: "Password" },
+  { name: "username", type: "text", label: "Username", required: true },
+  { name: "password", type: "password", label: "Password", required: true },
   { name: "remember-me", type: "checkbox", label: "Remember me" },
 ];
 

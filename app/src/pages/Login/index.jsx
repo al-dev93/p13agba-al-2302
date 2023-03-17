@@ -98,12 +98,13 @@ const Login = () => {
         {loginInputModel.map((input) => (
           <InputForm
             key={`${input.name}`}
-            state={loginState}
-            setState={setLoginState}
+            // state={loginState}
+            // setState={setLoginState}
             name={input.name}
             type={input.type}
             label={input.label}
             placeHolder={login ? getPlaceHolder(input.name) : undefined}
+            required={input.required ? "true" : undefined}
           />
         ))}
         <button type="submit" className="sign-in-button">
