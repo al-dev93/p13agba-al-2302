@@ -1,9 +1,13 @@
 /* eslint-disable prettier/prettier */
 import { configureStore } from "@reduxjs/toolkit";
-import inputLoginReducer from "../features/inputLogin";
+import loginReducer from "../features/login";
+import profileReducer from "../features/profile";
+import editProfileReducer from "../features/editProfile";
 
 export default configureStore({
   reducer: {
-    inputLogin: inputLoginReducer,
+    login: loginReducer,
+    profile: profileReducer,
+    editProfile: editProfileReducer,
   },
 });

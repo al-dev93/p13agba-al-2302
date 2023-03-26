@@ -1,44 +1,73 @@
 /* eslint-disable prettier/prettier */
-import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import InputForm from "../../components/InputForm";
+import {
+  disconnect as disconnectEditProfile,
+  input,
+  toggleEditBox,
+  updateInputEditBox,
+  updateProfile,
+} from "../../features/editProfile";
+import { disconnect as disconnectLogin } from "../../features/login";
+import {
+  disconnect as disconnectProfile,
+  fetchProfile,
+  updateProfileData,
+} from "../../features/profile";
 import { profileInputModel } from "../../utils/inputFormModels";
-import callApi from "../../service/api/callApi";
-import { PROFILE } from "../../utils/urlApi";
+import {
+  selectEditBox,
+  selectEditProfileData,
+  selectFetchEditProfileStatus,
+  selectFetchProfileStatus,
+  selectInputEditProfile,
+  selectProfileData,
+} from "../../utils/selectors";
 import "./index.css";
 
 const Profile = () => {
-  const [profilState, setProfilState] = useState();
-  const [editBox, openEditBox] = useState(false);
-  const [userData, setUserData] = useOutletContext();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { token } = JSON.parse(localStorage.getItem("login"));
+  const [firstNameHeader, lastNameHeader] = useSelector(selectProfileData);
+  const status = useSelector(selectFetchProfileStatus);
+  const isRejected = status === "rejected";
 
-  async function handleSubmit(event = undefined) {
-    let method;
-    let putData;
-    if (event) {
-      event.preventDefault();
-      putData = {
-        firstName: profilState["first-name"].value,
-        lastName: profilState["last-name"].value,
-      };
-      method = "PUT";
-    }
-    const data = await callApi(PROFILE, putData, method, token);
-    if (data.status === 200) {
-      setUserData(data.body);
-      if (!event)
-        setProfilState({
-          "first-name": { value: data.body.firstName },
-          "last-name": { value: data.body.lastName },
-        });
-    }
-  }
+  const editBox = useSelector(selectEditBox);
+  const editStatus = useSelector(selectFetchEditProfileStatus);
+  const isResolved = editStatus === "resolved";
+  const [firstName, lastName] = useSelector(selectEditProfileData);
 
   useEffect(() => {
-    handleSubmit();
+    dispatch(fetchProfile);
   }, []);
+
+  useEffect(() => {
+    if (status === "rejected") {
+      dispatch(disconnectLogin());
+      dispatch(disconnectProfile());
+      dispatch(disconnectEditProfile());
+      navigate("/login");
+    }
+  }, [isRejected]);
+
+  useEffect(() => {
+    if (isResolved) {
+      dispatch(updateProfileData({ firstName, lastName }));
+      dispatch(toggleEditBox());
+    }
+  }, [isResolved]);
+
+  function handleEditBox(event) {
+    if (event.target.textContent === "Edit Name") {
+      dispatch(updateInputEditBox({ firstNameHeader, lastNameHeader }));
+      dispatch(toggleEditBox());
+    } else if (event.target.textContent === "Cancel") {
+      dispatch(toggleEditBox());
+    }
+  }
 
   return (
     <>
@@ -46,28 +75,32 @@ const Profile = () => {
         <h1>
           Welcome back
           <br />
-          {userData && !editBox
-            ? `${userData.firstName} ${userData.lastName}!`
+          {!editBox
+            ? `${firstNameHeader || ""} ${lastNameHeader || ""}!`
             : null}
         </h1>
         {editBox && (
           <form
             onSubmit={(event) => {
-              handleSubmit(event);
-              openEditBox(false);
+              event.preventDefault();
+              dispatch(updateProfile);
             }}
             action=""
             className="editbox-form"
           >
             <div className="editbox-element-wrapper">
-              {profileInputModel.map((input) => (
-                <div key={input.name} className="editbox-input-form">
+              {profileInputModel.map((element) => (
+                <div key={`${element.name}`} className="editbox-input-form">
                   <InputForm
-                    state={profilState}
-                    setState={setProfilState}
-                    name={input.name}
-                    type={input.type}
-                    placeHolder={profilState[input.name].value}
+                    selector={selectInputEditProfile}
+                    input={input}
+                    name={element.name}
+                    type={element.type}
+                    inValue={
+                      element.name === "firstName"
+                        ? firstNameHeader
+                        : lastNameHeader
+                    }
                   />
                 </div>
               ))}
@@ -80,7 +113,7 @@ const Profile = () => {
                 <button
                   className="editbox-button"
                   type="button"
-                  onClick={() => openEditBox(false)}
+                  onClick={(event) => handleEditBox(event)}
                 >
                   Cancel
                 </button>
@@ -92,7 +125,7 @@ const Profile = () => {
           <button
             type="button"
             className="edit-button"
-            onClick={() => openEditBox(true)}
+            onClick={(event) => handleEditBox(event)}
           >
             Edit Name
           </button>

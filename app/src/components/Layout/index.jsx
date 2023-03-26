@@ -1,16 +1,22 @@
 import "./index.css";
-import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import LoginAction from "../LoginAction";
 import logo from "../../assets/images/argentBankLogo.png";
+import { disconnect as disconnectLogin } from "../../features/login";
+import { disconnect as disconnectProfil } from "../../features/profile";
+import { disconnect as disconnectEditBox } from "../../features/editProfile";
+import { selectProfileData } from "../../utils/selectors";
 
 const Layout = () => {
+  const dispatch = useDispatch();
+  const [firstNameHeader] = useSelector(selectProfileData);
   const locate = useLocation().pathname;
-  const [userData, setUserData] = useState(undefined);
 
   function handleDisconnect() {
-    setUserData(undefined);
-    if (!localStorage.getItem("userLogin")) localStorage.removeItem("login");
+    dispatch(disconnectProfil());
+    dispatch(disconnectLogin());
+    dispatch(disconnectEditBox());
   }
 
   return (
@@ -29,12 +35,12 @@ const Layout = () => {
           <h1 className="sr-only">Argent Bank</h1>
         </Link>
         <LoginAction
-          user={userData && userData.firstName}
+          user={firstNameHeader && firstNameHeader}
           disconnect={() => handleDisconnect()}
         />
       </nav>
       <main className={locate === "/" ? null : "main bg-dark"}>
-        <Outlet context={[userData, setUserData]} />
+        <Outlet />
       </main>
       <footer className="footer">
         <p className="footer-text">Copyright 2020 Argent Bank</p>

@@ -2,13 +2,19 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import propTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { input } from "../../features/inputLogin";
-import { selectInputLogin } from "../../utils/selectors";
 import style from "./index.module.css";
 
-const InputForm = ({ name, type, label, placeHolder, required }) => {
-  const login = JSON.parse(localStorage.getItem("userLogin"));
-  const inputLogin = useSelector(selectInputLogin(name));
+const InputForm = ({
+  selector,
+  input,
+  name,
+  type,
+  label,
+  required,
+  inChecked,
+  inValue,
+}) => {
+  const inputField = useSelector(selector(name));
   const dispatch = useDispatch();
 
   function handleChange(event) {
@@ -16,7 +22,7 @@ const InputForm = ({ name, type, label, placeHolder, required }) => {
     const { value, checked } = target;
     let error = "";
     if (required) {
-      if (target.value || login) target.classList.remove(style.invalid);
+      if (value) target.classList.remove(style.invalid);
       else {
         target.classList.add(style.invalid);
         error = `${label} is required`;
@@ -36,20 +42,22 @@ const InputForm = ({ name, type, label, placeHolder, required }) => {
       {label && type !== "checkbox" && (
         <label className={style.label} htmlFor={name}>
           {label}
-          {inputLogin?.error && (
-            <span className={style.error}>{inputLogin.error}</span>
+          {inputField?.error && (
+            <span className={style.error}>{inputField.error}</span>
           )}
         </label>
       )}
       <input
         type={type}
-        className={style.input}
+        className={
+          inputField?.error ? `${style.input} ${style.invalid}` : style.input
+        }
         id={name}
         name={name}
         onChange={handleChange}
         required={required}
-        placeholder={type !== "checkbox" ? placeHolder : undefined}
-        checked={type === "checkbox" ? inputLogin : null}
+        defaultChecked={inChecked}
+        defaultValue={inValue}
       />
       {type === "checkbox" && (
         <label className={style["remember-label"]} htmlFor={name}>
@@ -63,16 +71,20 @@ const InputForm = ({ name, type, label, placeHolder, required }) => {
 export default InputForm;
 
 InputForm.propTypes = {
+  selector: propTypes.func.isRequired,
+  input: propTypes.func.isRequired,
   name: propTypes.string.isRequired,
   type: propTypes.string,
   label: propTypes.string,
-  placeHolder: propTypes.string,
-  required: propTypes.string,
+  required: propTypes.bool,
+  inChecked: propTypes.bool,
+  inValue: propTypes.string,
 };
 
 InputForm.defaultProps = {
   type: "text",
   label: undefined,
-  placeHolder: undefined,
   required: undefined,
+  inChecked: undefined,
+  inValue: undefined,
 };
