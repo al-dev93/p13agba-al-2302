@@ -1,11 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable prettier/prettier */
-
 import { createSlice } from "@reduxjs/toolkit";
-import { selectFetchProfileStatus, selectFetchToken } from "../utils/selectors";
-import { PROFILE } from "../service/urlApi";
-
-const login = JSON.parse(localStorage.getItem("userLogin"));
 
 const initialState = {
   firstNameHeader: null,
@@ -65,33 +60,6 @@ const { actions, reducer } = createSlice({
   },
 });
 
-export async function fetchProfile(dispatch, getState) {
-  const status = selectFetchProfileStatus(getState());
-  const token =
-    (selectFetchToken(getState())
-      ? selectFetchToken(getState())
-      : login?.token) || "";
-  let data;
-
-  const apiHeaders = new Headers();
-  apiHeaders.append("accept", "application/json");
-  apiHeaders.append("Content-Type", "application/json");
-  apiHeaders.append("Authorization", `Bearer ${token}`);
-
-  if (status === "pending" || status === "updating") {
-    // on stop la fonction pour éviter de récupérer plusieurs fois la même donnée
-    return;
-  }
-  dispatch(actions.fetching());
-  try {
-    data = await (
-      await fetch(PROFILE, { method: "POST", headers: apiHeaders })
-    ).json();
-    dispatch(actions.resolved(data.body));
-  } catch (error) {
-    dispatch(actions.rejected(error.message));
-  }
-}
-
 export const { disconnect, updateProfileData } = actions;
+export const sliceActions = actions;
 export default reducer;

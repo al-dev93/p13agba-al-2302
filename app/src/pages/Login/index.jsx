@@ -4,13 +4,13 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import fetchThunk from "../../service/fetchThunk";
 import {
   selectLoginData,
   selectInputLogin,
   selectFetchLoginData,
 } from "../../utils/selectors";
 import {
-  fetchLogin,
   input,
   setInputError,
   setInputSaved,
@@ -42,7 +42,7 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    if (isSubmit && !isResolved && !token) dispatch(fetchLogin);
+    if (isSubmit && !isResolved && !token) dispatch(fetchThunk("login"));
     if (isResolved || (isSubmit && token)) {
       if (remember) {
         localStorage.setItem(

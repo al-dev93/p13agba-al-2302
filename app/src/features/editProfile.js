@@ -1,15 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable prettier/prettier */
-
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  selectEditProfileData,
-  selectFetchEditProfileStatus,
-  selectFetchToken,
-} from "../utils/selectors";
-import { PROFILE } from "../service/urlApi";
-
-const login = JSON.parse(localStorage.getItem("userLogin"));
 
 const initialState = {
   firstName: "",
@@ -76,43 +67,6 @@ const { actions, reducer } = createSlice({
   },
 });
 
-export async function updateProfile(dispatch, getState) {
-  const status = selectFetchEditProfileStatus(getState());
-  const token =
-    (selectFetchToken(getState())
-      ? selectFetchToken(getState())
-      : login?.token) || "";
-
-  const [firstName, lastName] = selectEditProfileData(getState());
-  let data;
-
-  const apiHeaders = new Headers();
-  apiHeaders.append("accept", "application/json");
-  apiHeaders.append("Content-Type", "application/json");
-  apiHeaders.append("Authorization", `Bearer ${token}`);
-  const apiBody = JSON.stringify({
-    firstName: `${firstName}`,
-    lastName: `${lastName}`,
-  });
-  if (status === "pending" || status === "updating") {
-    // on stop la fonction pour éviter de récupérer plusieurs fois la même donnée
-    return;
-  }
-  dispatch(actions.fetching());
-  try {
-    data = await (
-      await fetch(PROFILE, {
-        method: "PUT",
-        headers: apiHeaders,
-        body: apiBody,
-      })
-    ).json();
-    dispatch(actions.resolved(data.body));
-  } catch (error) {
-    dispatch(actions.rejected(error.message));
-  }
-}
-
 export const {
   disconnect,
   input,
@@ -120,4 +74,5 @@ export const {
   toggleSubmit,
   updateInputEditBox,
 } = actions;
+export const sliceActions = actions;
 export default reducer;

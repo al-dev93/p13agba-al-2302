@@ -8,14 +8,13 @@ import {
   input,
   toggleEditBox,
   updateInputEditBox,
-  updateProfile,
 } from "../../features/editProfile";
 import { disconnect as disconnectLogin } from "../../features/login";
 import {
   disconnect as disconnectProfile,
-  fetchProfile,
   updateProfileData,
 } from "../../features/profile";
+import fetchThunk from "../../service/fetchThunk";
 import { profileInputModel } from "../../utils/inputFormModels";
 import {
   selectEditBox,
@@ -41,7 +40,7 @@ const Profile = () => {
   const [firstName, lastName] = useSelector(selectEditProfileData);
 
   useEffect(() => {
-    dispatch(fetchProfile);
+    dispatch(fetchThunk("profile"));
   }, []);
 
   useEffect(() => {
@@ -83,7 +82,7 @@ const Profile = () => {
           <form
             onSubmit={(event) => {
               event.preventDefault();
-              dispatch(updateProfile);
+              dispatch(fetchThunk("editProfile"));
             }}
             action=""
             className="editbox-form"
