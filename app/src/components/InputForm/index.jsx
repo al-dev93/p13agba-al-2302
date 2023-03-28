@@ -27,12 +27,11 @@ const InputForm = ({
         target.classList.add(style.invalid);
         error = `${label} is required`;
       }
-      dispatch(input({ name, value, error }));
+      dispatch(input(name, value, error));
     } else if (type === "checkbox") {
-      dispatch(input({ name, checked, type }));
-    } else dispatch(input({ name, value }));
+      dispatch(input(name, checked));
+    } else dispatch(input(name, value));
   }
-
   return (
     <div
       className={

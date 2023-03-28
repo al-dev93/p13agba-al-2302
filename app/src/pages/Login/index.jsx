@@ -20,9 +20,10 @@ import {
 import InputForm from "../../components/InputForm";
 import { loginInputModel } from "../../utils/inputFormModels";
 import "./index.css";
+import { eraseSavedLogin, getSavedLogin, saveLogin } from "../../utils/storage";
 
 const Login = () => {
-  const login = JSON.parse(localStorage.getItem("userLogin"));
+  const login = getSavedLogin();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [username, password, remember, isSubmit] = useSelector(selectLoginData);
@@ -31,30 +32,15 @@ const Login = () => {
 
   useEffect(() => {
     if (login) {
-      dispatch(
-        setInputSaved({
-          username: login.username,
-          remember: login.remember === "true",
-          password: login.password,
-        })
-      );
+      dispatch(setInputSaved(login));
     }
   }, []);
 
   useEffect(() => {
     if (isSubmit && !isResolved && !token) dispatch(fetchThunk("login"));
     if (isResolved || (isSubmit && token)) {
-      if (remember) {
-        localStorage.setItem(
-          "userLogin",
-          JSON.stringify({
-            username: username.value,
-            token: `${token}`,
-            remember: `${remember}`,
-            password: "xxxxxxxxxxx",
-          })
-        );
-      } else localStorage.removeItem("userLogin");
+      if (remember) saveLogin(username.value, token, remember);
+      else eraseSavedLogin();
       navigate("/profile");
     }
   }, [isSubmit, isResolved]);
@@ -63,13 +49,9 @@ const Login = () => {
     event.preventDefault();
     if (!username.value || !password.value) {
       if (!username.value)
-        dispatch(
-          setInputError({ name: "username", error: "Username is required" })
-        );
+        dispatch(setInputError("username", "Username is required"));
       if (!password.value)
-        dispatch(
-          setInputError({ name: "password", error: "Password is required" })
-        );
+        dispatch(setInputError("password", "Password is required"));
       return;
     }
     if (login) {
@@ -79,7 +61,7 @@ const Login = () => {
         usernameInput === username.value &&
         passwordInput === password.value
       ) {
-        dispatch(setTokenInStore(login.token));
+        dispatch(setTokenInStore(login));
       }
     }
     dispatch(submit());
@@ -90,7 +72,6 @@ const Login = () => {
       <i className="fa fa-user-circle sign-in-icon" />
       <h1>Sign In</h1>
       <form noValidate onSubmit={(event) => handleSubmit(event)}>
-        {/* eslint-disable-next-line array-callback-return */}
         {loginInputModel.map((element) => {
           const item = useSelector(selectInputLogin(element.name)) || undefined;
           return (

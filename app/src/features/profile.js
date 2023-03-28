@@ -12,9 +12,14 @@ const { actions, reducer } = createSlice({
   name: "profile",
   initialState,
   reducers: {
-    updateProfileData: (draft, action) => {
-      draft.firstNameHeader = action.payload.firstName;
-      draft.lastNameHeader = action.payload.lastName;
+    updateProfileData: {
+      prepare: (firstName, lastName) => ({
+        payload: { firstName, lastName },
+      }),
+      reducer: (draft, action) => {
+        draft.firstNameHeader = action.payload.firstName;
+        draft.lastNameHeader = action.payload.lastName;
+      },
     },
     fetching: (draft) => {
       switch (draft.fetchData.status) {

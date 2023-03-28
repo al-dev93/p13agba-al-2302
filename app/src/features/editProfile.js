@@ -14,15 +14,25 @@ const { actions, reducer } = createSlice({
   initialState,
   reducers: {
     disconnect: () => initialState,
-    input: (draft, action) => {
-      draft[action.payload.name] = action.payload.value;
+    input: {
+      prepare: (name, value) => ({
+        payload: { name, value },
+      }),
+      reducer: (draft, action) => {
+        draft[action.payload.name] = action.payload.value;
+      },
     },
     toggleEditBox: (draft) => {
       draft.editBox = !draft.editBox;
     },
-    updateInputEditBox: (draft, action) => {
-      draft.firstName = action.payload.firstNameHeader;
-      draft.lastName = action.payload.lastNameHeader;
+    updateInputEditBox: {
+      prepare: (firstNameHeader, lastNameHeader) => ({
+        payload: { firstNameHeader, lastNameHeader },
+      }),
+      reducer: (draft, action) => {
+        draft.firstName = action.payload.firstNameHeader;
+        draft.lastName = action.payload.lastNameHeader;
+      },
     },
     fetching: (draft) => {
       switch (draft.fetchData.status) {

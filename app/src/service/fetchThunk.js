@@ -43,13 +43,7 @@ function fetchThunk(slice) {
         let name = "";
         if (data.message.includes("User")) name = "username";
         else if (data.message.includes("Password")) name = "password";
-        dispatch(
-          actions.rejected({
-            name,
-            error: error.message,
-            fetchError: data.message,
-          })
-        );
+        dispatch(actions.rejected(name, error, data));
       } else dispatch(actions.rejected(error.message));
     }
   };

@@ -4,9 +4,10 @@ import {
   selectFetchToken,
   selectLoginData,
 } from "../utils/selectors";
+import { getSavedLogin } from "../utils/storage";
 
 function getApiRequest(slice, getState) {
-  const login = JSON.parse(localStorage.getItem("userLogin"));
+  const login = getSavedLogin();
   const [username, password] = selectLoginData(getState());
   const [firstName, lastName] = selectEditProfileData(getState());
   const token = selectFetchToken(getState()) || login?.token || "";

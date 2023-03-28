@@ -54,14 +54,14 @@ const Profile = () => {
 
   useEffect(() => {
     if (isResolved) {
-      dispatch(updateProfileData({ firstName, lastName }));
+      dispatch(updateProfileData(firstName, lastName));
       dispatch(toggleEditBox());
     }
   }, [isResolved]);
 
   function handleEditBox(event) {
     if (event.target.textContent === "Edit Name") {
-      dispatch(updateInputEditBox({ firstNameHeader, lastNameHeader }));
+      dispatch(updateInputEditBox(firstNameHeader, lastNameHeader));
       dispatch(toggleEditBox());
     } else if (event.target.textContent === "Cancel") {
       dispatch(toggleEditBox());

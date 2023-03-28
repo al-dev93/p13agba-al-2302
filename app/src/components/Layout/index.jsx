@@ -1,4 +1,3 @@
-import "./index.css";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LoginAction from "../LoginAction";
@@ -7,6 +6,7 @@ import { disconnect as disconnectLogin } from "../../features/login";
 import { disconnect as disconnectProfil } from "../../features/profile";
 import { disconnect as disconnectEditBox } from "../../features/editProfile";
 import { selectProfileData } from "../../utils/selectors";
+import style from "./index.module.css";
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -20,15 +20,15 @@ const Layout = () => {
   }
 
   return (
-    <div className="layout-wrapper">
-      <nav className="main-nav">
+    <div className={style["layout-wrapper"]}>
+      <nav className={style["main-nav"]}>
         <Link
-          className="main-nav-logo"
+          className={style["main-nav-logo"]}
           to="/"
           onClick={() => handleDisconnect()}
         >
           <img
-            className="main-nav-logo-image"
+            className={style["main-nav-logo-image"]}
             src={logo}
             alt="Argent Bank Logo"
           />
@@ -39,7 +39,9 @@ const Layout = () => {
           disconnect={() => handleDisconnect()}
         />
       </nav>
-      <main className={locate === "/" ? null : "main bg-dark"}>
+      <main
+        className={locate === "/" ? null : `${style.main} ${style["bg-dark"]}`}
+      >
         <Outlet />
       </main>
       <footer className="footer">
