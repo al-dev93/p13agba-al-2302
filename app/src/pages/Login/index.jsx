@@ -22,6 +22,10 @@ import { loginInputModel } from "../../utils/inputFormModels";
 import "./index.css";
 import { eraseSavedLogin, getSavedLogin, saveLogin } from "../../utils/storage";
 
+/**
+ * @description component used for login page
+ * @returns render login page in outlet of layout
+ */
 const Login = () => {
   const login = getSavedLogin();
   const navigate = useNavigate();
@@ -45,6 +49,10 @@ const Login = () => {
     }
   }, [isSubmit, isResolved]);
 
+  /**
+   * @description handle function on submit form
+   * @param {object} event
+   */
   function handleSubmit(event) {
     event.preventDefault();
     if (!username.value || !password.value) {

@@ -10,6 +10,10 @@ import { sliceActions as editProfileActions } from "../features/editProfile";
 import { LOGIN, PROFILE } from "./urlApi";
 import getApiRequest from "./apiRequest";
 
+/**
+ * @description custom thunk for fetching data of the API
+ * @param {*} slice
+ */
 function fetchThunk(slice) {
   return async (dispatch, getState) => {
     let data;

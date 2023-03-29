@@ -8,11 +8,19 @@ import { disconnect as disconnectEditBox } from "../../features/editProfile";
 import { selectProfileData } from "../../utils/selectors";
 import style from "./index.module.css";
 
+/**
+ * @description component layout used with login and profil pages
+ * @returns render header, main and footer pages
+ */
 const Layout = () => {
   const dispatch = useDispatch();
   const [firstNameHeader] = useSelector(selectProfileData);
   const locate = useLocation().pathname;
 
+  /**
+   * @description handle function for disconnect application
+   * on click logo or logout button in header of page
+   */
   function handleDisconnect() {
     dispatch(disconnectProfil());
     dispatch(disconnectLogin());

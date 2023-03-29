@@ -26,6 +26,10 @@ import {
 } from "../../utils/selectors";
 import "./index.css";
 
+/**
+ * @description component used for profile page
+ * @returns render profile page in outlet of layout
+ */
 const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -59,6 +63,11 @@ const Profile = () => {
     }
   }, [isResolved]);
 
+  /**
+   * @description handle function for open / close edit box
+   * and update fields in edit box
+   * @param {object} event
+   */
   function handleEditBox(event) {
     if (event.target.textContent === "Edit Name") {
       dispatch(updateInputEditBox(firstNameHeader, lastNameHeader));

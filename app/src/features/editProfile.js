@@ -9,6 +9,9 @@ const initialState = {
   fetchData: { status: "void", error: null },
 };
 
+/**
+ * @description slice used for editing profile
+ */
 const { actions, reducer } = createSlice({
   name: "editProfile",
   initialState,
@@ -34,6 +37,12 @@ const { actions, reducer } = createSlice({
         draft.lastName = action.payload.lastNameHeader;
       },
     },
+    /**
+     * @descrition actions fectch data for editing profile
+     * @param {*} draft (copy of state)
+     * @param {*} action for update state
+     */
+    // fetching action & reducer
     fetching: (draft) => {
       switch (draft.fetchData.status) {
         case "void":
@@ -51,12 +60,12 @@ const { actions, reducer } = createSlice({
     },
     // resolved action & reducer
     resolved: (draft, action) => {
-      // si la requête est en cours
+      // if request is in progress
       if (
         draft.fetchData.status === "pending" ||
         draft.fetchData.status === "updating"
       ) {
-        // on passe en resolved et on sauvegarde les données
+        // resolved and saving data
         draft.fetchData.status = "resolved";
         draft.firstName = action.payload.firstName;
         draft.lastName = action.payload.lastName;
@@ -64,12 +73,12 @@ const { actions, reducer } = createSlice({
     },
     // rejected action & reducer
     rejected: (draft, action) => {
-      // si la requête est en cours
+      // if request is in progress
       if (
         draft.fetchData.status === "pending" ||
         draft.fetchData.status === "updating"
       ) {
-        // on passe en rejected, on sauvegarde l'erreur et on supprime les données
+        // rejected and saving error
         draft.fetchData.status = "rejected";
         draft.fetchData.error = action.payload;
       }

@@ -4,6 +4,18 @@ import propTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import style from "./index.module.css";
 
+/**
+ * @description input component for login and profil page
+ * @param {function} selector redux state
+ * @param {function} input redux action
+ * @param {string} name
+ * @param {string} type
+ * @param {string} label
+ * @param {bool} required
+ * @param {bool} inChecked
+ * @param {string} inValue
+ * @returns render input element text, password or checkbox
+ */
 const InputForm = ({
   selector,
   input,
@@ -17,21 +29,28 @@ const InputForm = ({
   const inputField = useSelector(selector(name));
   const dispatch = useDispatch();
 
+  /**
+   * @description handle function for input change
+   * @param {obbject} event
+   */
   function handleChange(event) {
     const { target } = event;
     const { value, checked } = target;
     let error = "";
+    // if required check validity
     if (required) {
       if (value) target.classList.remove(style.invalid);
       else {
         target.classList.add(style.invalid);
         error = `${label} is required`;
       }
+      // dispatch input action in slice redux
       dispatch(input(name, value, error));
     } else if (type === "checkbox") {
       dispatch(input(name, checked));
     } else dispatch(input(name, value));
   }
+
   return (
     <div
       className={

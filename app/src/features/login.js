@@ -10,6 +10,9 @@ const initialState = {
   fetchData: { status: "void", error: null, token: null },
 };
 
+/**
+ * @description slice used for login
+ */
 const { actions, reducer } = createSlice({
   name: "login",
   initialState,
@@ -69,6 +72,12 @@ const { actions, reducer } = createSlice({
     submit: (draft) => {
       draft.isSubmit = true;
     },
+    /**
+     * @descrition actions fectch data for login
+     * @param {*} draft (copy of state)
+     * @param {*} action for update state
+     */
+    // fetching action & reducer
     fetching: (draft) => {
       switch (draft.fetchData.status) {
         case "void":
@@ -86,12 +95,12 @@ const { actions, reducer } = createSlice({
     },
     // resolved action & reducer
     resolved: (draft, action) => {
-      // si la requête est en cours
+      // if request is in progress
       if (
         draft.fetchData.status === "pending" ||
         draft.fetchData.status === "updating"
       ) {
-        // on passe en resolved et on sauvegarde les données
+        // resolved and saving data
         draft.fetchData.status = "resolved";
         draft.fetchData.token = action.payload.token;
       }
@@ -102,12 +111,12 @@ const { actions, reducer } = createSlice({
         payload: { name, error: error.message, fetchError: data.message },
       }),
       reducer: (draft, action) => {
-        // si la requête est en cours
+        // if request is in progress
         if (
           draft.fetchData.status === "pending" ||
           draft.fetchData.status === "updating"
         ) {
-          // on passe en rejected, on sauvegarde l'erreur et on supprime les données
+          // rejected, saving error, disable isSubmit
           draft.fetchData.status = "rejected";
           draft.isSubmit = false;
           draft.fetchData.error = action.payload.error;

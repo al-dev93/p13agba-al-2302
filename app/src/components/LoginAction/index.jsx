@@ -3,6 +3,12 @@ import propTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import style from "./index.module.css";
 
+/**
+ * @description component login action used in header of page
+ * @param {string} user
+ * @param {function} disconnect
+ * @returns render login icon or login icon, first name and logout button
+ */
 const LoginAction = ({ user, disconnect }) => {
   return (
     (user && (

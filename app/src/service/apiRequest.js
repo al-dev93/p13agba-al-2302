@@ -6,6 +6,12 @@ import {
 } from "../utils/selectors";
 import { getSavedLogin } from "../utils/storage";
 
+/**
+ *
+ * @param {*} slice
+ * @param {*} getState
+ * @returns
+ */
 function getApiRequest(slice, getState) {
   const login = getSavedLogin();
   const [username, password] = selectLoginData(getState());
