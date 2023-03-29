@@ -8,7 +8,7 @@ The folders and files contained in this part of the repository tree relate to th
 
 ### 2.1 Prerequisites
 
-First you have to fork the repository and clone it on your computer. You must also install the micro API before installing the front end, read [README.md for back-end](https://github.com/al-dev93/p13agba-al-2302/blob/main/api/README.md) for mor informations.
+First you have to fork the repository and clone it on your computer. You must also install the micro API before installing the front end, read [README.md for back-end](https://github.com/al-dev93/p13agba-al-2302/blob/develop/api/README.md) for mor informations.
 
 ### 2.2 Front-End installation
 
