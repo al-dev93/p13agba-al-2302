@@ -1,0 +1,38 @@
+/* stylelint-disable a11y/media-prefers-color-scheme */
+.sign-out-wrapper {
+  align-items: center;
+  font-weight: bold;
+}
+
+.main-nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.main-nav a.router-link-exact-active {
+  color: #42b983;
+}
+
+i:focus,
+i:hover {
+  text-decoration: none;
+}
+
+.main-nav-item {
+  text-decoration: none;
+  margin-right: 0.5rem;
+  margin-left: 0.7rem;
+  align-items: center;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.main-nav-item:focus,
+.main-nav-item:hover {
+  text-decoration: underline;
+}
+
+.sign-icon {
+  font-size: 1rem;
+  margin-right: 4.45px;
+}

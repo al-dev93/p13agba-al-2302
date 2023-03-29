@@ -1,0 +1,43 @@
+/* stylelint-disable a11y/media-prefers-color-scheme */
+.layout-wrapper {
+  flex: 1 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1 1;
+}
+
+.bg-dark {
+  background-color: #12002b;
+}
+
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 20px;
+}
+
+.main-nav-logo {
+  display: flex;
+  align-items: center;
+}
+
+.main-nav-logo-image {
+  max-width: 100%;
+  width: 200px;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  border-top: 2px solid #ccc;
+  padding: 2rem 0 1.5rem;
+}
+
+.footer-text {
+  margin: 0;
+  padding: 0;
+}
