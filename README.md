@@ -13,5 +13,5 @@ It includes the necessary for:
 
 ### 2. Start the project
 
-- for the back-end, please consult the file [README.md for back-end](https://github.com/al-dev93/p13agba-al-2302/blob/main/api/README.md) before starting
-- for the front-end, you need to check the file [README.md for front-end](https://github.com/al-dev93/p13agba-al-2302/blob/main/app/README.md)
+- for the back-end, please consult the file [README.md for back-end](https://github.com/al-dev93/p13agba-al-2302/blob/develop/api/README.md) before starting
+- for the front-end, you need to check the file [README.md for front-end](https://github.com/al-dev93/p13agba-al-2302/blob/develop/app/README.md)
