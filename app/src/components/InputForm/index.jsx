@@ -1,48 +1,54 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import propTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
 import style from "./index.module.css";
 
-function isInvalidInput(state, property) {
-  if (state[property] === undefined || !state[property].error) return false;
-  return true;
-}
+/**
+ * @description input component for login and profil page
+ * @param {function} selector redux state
+ * @param {function} input redux action
+ * @param {string} name
+ * @param {string} type
+ * @param {string} label
+ * @param {bool} required
+ * @param {bool} inChecked
+ * @param {string} inValue
+ * @returns render input element text, password or checkbox
+ */
+const InputForm = ({
+  selector,
+  input,
+  name,
+  type,
+  label,
+  required,
+  inChecked,
+  inValue,
+}) => {
+  const inputField = useSelector(selector(name));
+  const dispatch = useDispatch();
 
-function hasErrorProperty(object) {
-  return Object.prototype.hasOwnProperty.call(object, "error");
-}
-
-// function capitalizeFirstLetter(word) {
-//   const Word = word.replace(/^./, word[0].toUpperCase());
-//   return Word;
-// }
-
-const InputForm = ({ state, setState, name, type, label, placeHolder }) => {
-  const login = JSON.parse(localStorage.getItem("userLogin"));
-
+  /**
+   * @description handle function for input change
+   * @param {obbject} event
+   */
   function handleChange(event) {
     const { target } = event;
-    if (hasErrorProperty(state[name])) {
-      if (target.value || login) target.classList.remove(style.invalid);
-      else target.classList.add(style.invalid);
-      setState({
-        ...state,
-        [name]: {
-          value: target.value,
-          error: target.value || login ? "" : `${label} is required`,
-        },
-      });
-    } else if (name === "remember-me") {
-      setState({
-        ...state,
-        "remember-me": target.checked,
-      });
-    } else {
-      setState({
-        ...state,
-        [name]: { value: target.value },
-      });
-    }
+    const { value, checked } = target;
+    let error = "";
+    // if required check validity
+    if (required) {
+      if (value) target.classList.remove(style.invalid);
+      else {
+        target.classList.add(style.invalid);
+        error = `${label} is required`;
+      }
+      // dispatch input action in slice redux
+      dispatch(input(name, value, error));
+    } else if (type === "checkbox") {
+      dispatch(input(name, checked));
+    } else dispatch(input(name, value));
   }
 
   return (
@@ -54,24 +60,22 @@ const InputForm = ({ state, setState, name, type, label, placeHolder }) => {
       {label && type !== "checkbox" && (
         <label className={style.label} htmlFor={name}>
           {label}
-          {state[name].error && (
-            <span className={style.error}>{state[name].error}</span>
+          {inputField?.error && (
+            <span className={style.error}>{inputField.error}</span>
           )}
         </label>
       )}
       <input
         type={type}
         className={
-          isInvalidInput(state, name)
-            ? `${style.input} ${style.invalid}`
-            : style.input
+          inputField?.error ? `${style.input} ${style.invalid}` : style.input
         }
         id={name}
         name={name}
         onChange={handleChange}
-        required={hasErrorProperty(state[name]) ? "on" : undefined}
-        placeholder={type !== "checkbox" ? placeHolder : undefined}
-        checked={type === "checkbox" ? state[name] : null}
+        required={required}
+        defaultChecked={inChecked}
+        defaultValue={inValue}
       />
       {type === "checkbox" && (
         <label className={style["remember-label"]} htmlFor={name}>
@@ -85,23 +89,20 @@ const InputForm = ({ state, setState, name, type, label, placeHolder }) => {
 export default InputForm;
 
 InputForm.propTypes = {
-  state: propTypes.shape({
-    username: propTypes.objectOf(propTypes.string) || undefined,
-    password: propTypes.objectOf(propTypes.string) || undefined,
-    "remember-me": propTypes.bool || null,
-    "first-name": propTypes.objectOf(propTypes.string) || undefined,
-    "last-name": propTypes.objectOf(propTypes.string) || undefined,
-  }),
-  setState: propTypes.func.isRequired,
+  selector: propTypes.func.isRequired,
+  input: propTypes.func.isRequired,
   name: propTypes.string.isRequired,
   type: propTypes.string,
   label: propTypes.string,
-  placeHolder: propTypes.string,
+  required: propTypes.bool,
+  inChecked: propTypes.bool,
+  inValue: propTypes.string,
 };
 
 InputForm.defaultProps = {
-  state: null,
   type: "text",
   label: undefined,
-  placeHolder: undefined,
+  required: undefined,
+  inChecked: undefined,
+  inValue: undefined,
 };

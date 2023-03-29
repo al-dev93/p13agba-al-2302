@@ -3,6 +3,10 @@ import iconChat from "../../assets/icons/icon-chat.png";
 import iconMoney from "../../assets/icons/icon-money.png";
 import iconSecurity from "../../assets/icons/icon-security.png";
 
+/**
+ * @description component for home page
+ * @returns render home page in outlet of layout
+ */
 const Home = () => (
   <>
     <div className="hero">

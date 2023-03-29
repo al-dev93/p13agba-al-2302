@@ -1,6 +1,5 @@
 /* stylelint-disable a11y/media-prefers-color-scheme */
 .sign-out-wrapper {
-  display: flex;
   align-items: center;
   font-weight: bold;
 }
@@ -22,9 +21,10 @@ i:hover {
 .main-nav-item {
   text-decoration: none;
   margin-right: 0.5rem;
-  margin-left: 1rem;
-  display: flex;
+  margin-left: 0.7rem;
   align-items: center;
+  font-weight: bold;
+  color: #2c3e50;
 }
 
 .main-nav-item:focus,
@@ -33,6 +33,6 @@ i:hover {
 }
 
 .sign-icon {
-  font-size: 1.5rem;
+  font-size: 1rem;
   margin-right: 4.45px;
 }
