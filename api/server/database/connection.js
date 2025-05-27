@@ -24,7 +24,7 @@ async function connectDB() {
     console.log(
       `Database successfully connected to ${
         isProd ? "production" : "development"
-      } DB`
+      } DB at ${databaseUrl}`
     );
     return conn;
   } catch (error) {
