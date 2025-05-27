@@ -8,10 +8,10 @@ const { connectDB, disconnectDB } = require("./database/connection");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const allowedOrigins =
-  process.env.NODE_ENV === "production"
-    ? [process.env.FRONTEND_URL]
-    : ["http://localhost:3000", process.env.FRONTEND_URL].filter(Boolean);
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.NODE_ENV !== "production" && "http://localhost:3000",
+].filter(Boolean);
 
 // Connect to the database
 (async () => await connectDB())();
@@ -19,7 +19,13 @@ const allowedOrigins =
 // Handle CORS issues
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, cb) {
+      // origin === undefined for same-site calls
+      if (!origin || allowedOrigins.includes(origin)) {
+        return cb(null, true);
+      }
+      cb(new Error(`CORS Policy: origin ${origin} not allowed`));
+    },
     credentials: true,
   })
 );
