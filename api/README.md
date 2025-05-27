@@ -33,30 +33,30 @@ mongo --version
 npm install
 
 # Start local dev server
-npm run dev:server
+npm run dev
 
 # Populate database with two users
-npm run populate-db
+npm run populate
 ```
 
 Your server should now be running at <http://locahost:3001> and you will now have two users in your MongoDB database!
 
 ## Populated Database Data
 
-Once you run the `populate-db` script, you should have two users in your database:
+Once you run the `populate` script, you should have two users in your database:
 
 ### Tony Stark
 
-- First Name: `Tony`
-- Last Name: `Stark`
-- Email: `tony@stark.com`
+- First Name: `Chloé`
+- Last Name: `Durand`
+- Email: `chloe.durand@devmail.com`
 - Password: `password123`
 
 ### Steve Rogers
 
-- First Name: `Steve`,
-- Last Name: `Rogers`,
-- Email: `steve@rogers.com`,
+- First Name: `Jean`,
+- Last Name: `Martin`,
+- Email: `jean.martin@devmail.com`,
 - Password: `password456`
 
 ## API Documentation
@@ -69,4 +69,4 @@ Static HTML and CSS has been created for most of the site and is located in: `/d
 
 For some of the dynamic features, like toggling user editing, there is a mock-up for it in `/designs/wireframes/edit-user-name.png`.
 
-And for the API model that you will be proposing for transactitons, the wireframe can be found in `/designs/wireframes/transactions.png`.
+And for the API model that you will be proposing for transactions, the wireframe can be found in `/designs/wireframes/transactions.png`.

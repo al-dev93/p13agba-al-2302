@@ -1,24 +1,52 @@
-const axios = require('axios')
-const signupApi = 'http://localhost:3001/api/v1/user/signup'
+require("dotenv").config();
+
+const { connectDB, disconnectDB } = require("../database/connection");
+const userService = require("../services/userService");
 
 const users = [
   {
-    firstName: 'Tony',
-    lastName: 'Stark',
-    email: 'tony@stark.com',
-    password: 'password123'
+    firstName: "Chloé",
+    lastName: "Durand",
+    email: "chloe.durand@devmail.com",
+    password: "password123",
   },
   {
-    firstName: 'Steve',
-    lastName: 'Rogers',
-    email: 'steve@rogers.com',
-    password: 'password456'
-  }
-]
+    firstName: "Jean",
+    lastName: "Martin",
+    email: "jean.martin@devmail.com",
+    password: "password456",
+  },
+];
 
-users.forEach(user => {
-  axios
-    .post(signupApi, user)
-    .then(response => console.log(response))
-    .catch(error => console.log(error))
-})
+async function populate() {
+  try {
+    await connectDB();
+    console.log("✅ Connected to the DB, we can populate…");
+
+    const User = require("../database/models/userModel");
+    await User.deleteMany({});
+    console.log("🗑️  Users collection emptied.");
+
+    for (const u of users) {
+      try {
+        await userService.createUser({
+          firstName: u.firstName,
+          lastName: u.lastName,
+          email: u.email,
+          password: u.password,
+        });
+        console.log(`👤 Created user ${u.email}`);
+      } catch (error) {
+        console.error(`⚠️  Could not create ${u.email}:`, err.message);
+      }
+    }
+    await disconnectDB();
+    console.log("🎉 Data population completed !");
+    process.exit(0);
+  } catch (error) {
+    console.error("❌ Data population error :", error);
+    process.exit(1);
+  }
+}
+
+populate();

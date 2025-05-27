@@ -19,10 +19,10 @@ Once the repository is cloned on your computer and the micro API is installed, g
 **Note**: make sure the micro API has been installed beforehand.
 
 - In the terminal, go to the back-end folder `/api`
-- Use the command `mongod start` for run database
+  ~~- Use the command `mongod start` for run database~~
 - Use the command `npm run dev:server` for connect API to database
 - In the terminal, a message is displayed warning that the API has started on port 3001 and database has successfully connected
 - In the terminal, go to the front-end folder `/app`
 - Use the command `yarn start`
-- The browser opens to the homepage, otherwise enter `http://localhost:3000` in the adress bar of the browser
+- The browser opens to the homepage, otherwise enter `http://localhost:3000` in the address bar of the browser
 - The homepage is loaded, click on sign in to go to the login page.
