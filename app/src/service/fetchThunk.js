@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   selectFetchEditProfileStatus,
   selectFetchLoginData,
@@ -40,14 +39,34 @@ function fetchThunk(slice) {
     }
     dispatch(actions.fetching());
     try {
-      data = await (await fetch(url, getApiRequest(slice, getState))).json();
+      // data = await (await fetch(url, getApiRequest(slice, getState))).json();
+      const response = await fetch(url, getApiRequest(slice, getState));
+      data = await response.json();
+
+      if (!response.ok) {
+        if (slice === "login") {
+          let name = "";
+          if (data.message.includes("User")) name = "username";
+          else if (data.message.includes("Password")) name = "password";
+          dispatch(loginActions.rejected(name, new Error(data.message), data));
+        } else {
+          dispatch(actions.rejected(data.message));
+        }
+        return;
+      }
+
+      // Stocke le token JWT après login
+      if (slice === "login" && data.body?.token) {
+        sessionStorage.setItem("authToken", data.body.token);
+      }
+
       dispatch(actions.resolved(data.body));
     } catch (error) {
       if (slice === "login") {
         let name = "";
         if (data.message.includes("User")) name = "username";
         else if (data.message.includes("Password")) name = "password";
-        dispatch(actions.rejected(name, error, data));
+        dispatch(loginActions.rejected(name, error, data));
       } else dispatch(actions.rejected(error.message));
     }
   };
