@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /**
  * @description definition of the input elements of the login page
  */

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import propTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { configureStore } from "@reduxjs/toolkit";
 import loginReducer from "../features/login";
 import profileReducer from "../features/profile";

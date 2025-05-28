@@ -1,5 +1,4 @@
 /* eslint-disable import/prefer-default-export */
-/* eslint-disable prettier/prettier */
 
 /**
  * @description selector in login state

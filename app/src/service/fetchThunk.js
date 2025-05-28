@@ -32,51 +32,22 @@ function fetchThunk(slice) {
         status = selectFetchEditProfileStatus(getState());
         actions = editProfileActions;
         break;
-      default:
-        throw new Error(`Unknown slice: ${slice}`);
+      // no default
     }
     if (status === "pending" || status === "updating") {
       return;
     }
     dispatch(actions.fetching());
     try {
-      const options = getApiRequest(slice, getState);
-      // eslint-disable-next-line no-console
-      // console.log("📤 [DEBUG fetchThunk]", slice, url, options);
-      const response = await fetch(url, options);
-
-      let json;
-      try {
-        json = await response.json();
-      } catch (parseError) {
-        throw new Error("Invalid JSON response");
-      }
-      data = json;
-
-      if (!response.ok) {
-        const errMsg =
-          data?.message || `Request failed with status ${response.status}`;
-        if (slice === "login") {
-          let name = "";
-          if (errMsg.includes("User")) name = "username";
-          else if (errMsg.includes("Password")) name = "password";
-          dispatch(loginActions.rejected(name, new Error(errMsg), data));
-        } else {
-          dispatch(actions.rejected(errMsg));
-        }
-        return;
-      }
-
-      if (slice === "login" && data.body?.token) {
-        sessionStorage.setItem("authToken", data.body.token);
-      }
-
+      data = await (await fetch(url, getApiRequest(slice, getState))).json();
       dispatch(actions.resolved(data.body));
     } catch (error) {
-      const errMsg = error?.message || "Unknown error occurred";
       if (slice === "login") {
-        dispatch(loginActions.rejected("", error, data));
-      } else dispatch(actions.rejected(errMsg));
+        let name = "";
+        if (data.message.includes("User")) name = "username";
+        else if (data.message.includes("Password")) name = "password";
+        dispatch(actions.rejected(name, error, data));
+      } else dispatch(actions.rejected(error.message));
     }
   };
 }
