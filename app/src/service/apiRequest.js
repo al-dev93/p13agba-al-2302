@@ -34,29 +34,36 @@ function getApiRequest(slice, getState) {
   // };
   const state = getState();
   const token = sessionStorage.getItem("authToken");
+  const headers = { "Content-Type": "application/json" };
 
-  // Détermine la méthode et le corps selon la slice
+  if (token && slice !== "login") {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
   let method = "GET";
-  let body = null;
+  let body;
+
   switch (slice) {
     case "login":
-      method = "POST";
-      body = JSON.stringify(state.login.input);
+      {
+        method = "POST";
+        const { email, password } = state.login.input;
+        body = JSON.stringify({ email, password });
+      }
       break;
     case "profile":
       method = "POST";
-      body = JSON.stringify(state.login.input);
+      body = undefined;
       break;
     case "editProfile":
-      method = "PUT";
-      body = JSON.stringify(state.editProfile.input);
+      {
+        method = "PUT";
+        const { firstName, lastName } = state.editProfile.input;
+        body = JSON.stringify({ firstName, lastName });
+      }
       break;
     default:
-  }
-
-  const headers = { "Content-Type": "application/json" };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
+      throw new Error(`Unknown slice "${slice}" in getApiRequest`);
   }
 
   return {
