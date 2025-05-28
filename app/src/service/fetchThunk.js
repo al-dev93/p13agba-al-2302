@@ -41,7 +41,8 @@ function fetchThunk(slice) {
     dispatch(actions.fetching());
     try {
       const options = getApiRequest(slice, getState);
-      console.log("📤 [DEBUG fetchThunk]", slice, url, options);
+      // eslint-disable-next-line no-console
+      // console.log("📤 [DEBUG fetchThunk]", slice, url, options);
       const response = await fetch(url, options);
 
       let json;
