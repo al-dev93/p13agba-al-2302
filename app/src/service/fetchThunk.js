@@ -32,42 +32,50 @@ function fetchThunk(slice) {
         status = selectFetchEditProfileStatus(getState());
         actions = editProfileActions;
         break;
-      // no default
+      default:
+        throw new Error(`Unknown slice: ${slice}`);
     }
     if (status === "pending" || status === "updating") {
       return;
     }
     dispatch(actions.fetching());
     try {
-      // data = await (await fetch(url, getApiRequest(slice, getState))).json();
-      const response = await fetch(url, getApiRequest(slice, getState));
-      data = await response.json();
+      const options = getApiRequest(slice, getState);
+      console.log("📤 [DEBUG fetchThunk]", slice, url, options);
+      const response = await fetch(url, options);
+
+      let json;
+      try {
+        json = await response.json();
+      } catch (parseError) {
+        throw new Error("Invalid JSON response");
+      }
+      data = json;
 
       if (!response.ok) {
+        const errMsg =
+          data?.message || `Request failed with status ${response.status}`;
         if (slice === "login") {
           let name = "";
-          if (data.message.includes("User")) name = "username";
-          else if (data.message.includes("Password")) name = "password";
-          dispatch(loginActions.rejected(name, new Error(data.message), data));
+          if (errMsg.includes("User")) name = "username";
+          else if (errMsg.includes("Password")) name = "password";
+          dispatch(loginActions.rejected(name, new Error(errMsg), data));
         } else {
-          dispatch(actions.rejected(data.message));
+          dispatch(actions.rejected(errMsg));
         }
         return;
       }
 
-      // Stocke le token JWT après login
       if (slice === "login" && data.body?.token) {
         sessionStorage.setItem("authToken", data.body.token);
       }
 
       dispatch(actions.resolved(data.body));
     } catch (error) {
+      const errMsg = error?.message || "Unknown error occurred";
       if (slice === "login") {
-        let name = "";
-        if (data.message.includes("User")) name = "username";
-        else if (data.message.includes("Password")) name = "password";
-        dispatch(loginActions.rejected(name, error, data));
-      } else dispatch(actions.rejected(error.message));
+        dispatch(loginActions.rejected("", error, data));
+      } else dispatch(actions.rejected(errMsg));
     }
   };
 }
