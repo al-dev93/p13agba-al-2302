@@ -34,8 +34,8 @@ function getApiRequest(slice, getState) {
   // };
   const state = getState();
   const token = sessionStorage.getItem("authToken");
-  const headers = { "Content-Type": "application/json" };
 
+  const headers = { "Content-Type": "application/json" };
   if (token && slice !== "login") {
     headers.Authorization = `Bearer ${token}`;
   }
@@ -43,33 +43,24 @@ function getApiRequest(slice, getState) {
   let method = "GET";
   let body;
 
-  switch (slice) {
-    case "login":
-      {
-        method = "POST";
-        const { email, password } = state.login.input;
-        body = JSON.stringify({ email, password });
-      }
-      break;
-    case "profile":
-      method = "POST";
-      body = undefined;
-      break;
-    case "editProfile":
-      {
-        method = "PUT";
-        const { firstName, lastName } = state.editProfile.input;
-        body = JSON.stringify({ firstName, lastName });
-      }
-      break;
-    default:
-      throw new Error(`Unknown slice "${slice}" in getApiRequest`);
+  if (slice === "login") {
+    method = "POST";
+    const { email, password } = state.login.input;
+    body = JSON.stringify({ email, password });
+  } else if (slice === "profile") {
+    method = "POST";
+  } else if (slice === "editProfile") {
+    method = "PUT";
+    const { firstName, lastName } = state.editProfile.input;
+    body = JSON.stringify({ firstName, lastName });
+  } else {
+    throw new Error(`Unknown slice "${slice}" in getApiRequest`);
   }
 
   return {
     method,
     headers,
-    ...(body && { body }),
+    ...(body !== undefined && { body }),
   };
 }
 
